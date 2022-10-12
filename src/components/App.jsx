@@ -1,28 +1,30 @@
 import React, { Component } from "react";
 import { nanoid } from 'nanoid'
+import ContactForm from "./ContactForm/ContactForm";
+import ContactList from "./ContactList";
+import Filter from "./Filter";
+import { ContactTitle, Container, MainTitle } from "./App.styled";
 
 class App extends Component {
   state = {
-    contacts: [],
-    name: '',
-    number: '',
-  }
+    contacts: [
+    {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
+    {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
+    {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
+    {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
+    ],
+    filter: '',
+  } 
 
-  handleChange = e => {
-    const {name, value} = e.currentTarget
-    console.log(e.currentTarget.name);
+  
 
-    this.setState({[name]: value})
-  }
-
-  reset = () => {
-    this.setState({name: ''})
-  }
-
-  addContactOnSubmitForm = e => {
-    e.preventDefault()
-
-    const {name, number} = this.state
+  addContactOnSubmitForm = (name, number) => {
+    const { contacts } = this.state
+    
+    if (contacts.find(contact =>
+      contact.name.toLowerCase() === name.toLowerCase())) {
+     return alert(`${name} is already in contact list`)
+    }
 
     const newContact = {
       id: nanoid(),
@@ -34,52 +36,40 @@ class App extends Component {
       contacts: [newContact, ...prevState.contacts]
     }))
 
-    this.reset()
   }
-  
+
+  handleChange = e => {
+        const { name, value } = e.currentTarget
+        this.setState({[name]: value})
+  }
+
+  filterContact = () => {
+    const { contacts, filter } = this.state
+    
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    )
+  }
+
+  deletedContact = (id) => {
+    this.setState(prevState => {
+      return {contacts: prevState.contacts.filter(contact => !(contact.id === id))}      
+    })
+  }
+
+
   render() {
-    const {name, contacts, number} = this.state
+    const {filter} = this.state
+    const filteredContacts =this.filterContact()
 
     return <>
-      <h1>PHONEBOOK</h1>
-      <form onSubmit={this.addContactOnSubmitForm}>
-        <label >
-          Name
-          <input
-            type="text"
-            name="name"
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-            value={name}
-            onChange={this.handleChange}
-          />
-        </label>
-        <label >
-          Telephone
-          <input
-            type="tel"
-            name="number"
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            value={number}
-            required
-            onChange={this.handleChange}
-          />
-        </label>
-
-        <button type="submit">Save</button>
-      </form>
-      
-      <h2>CONTACTS</h2>
-      <ul>
-        {contacts.map(({id, name, number}) => {
-          return <li key={id}>
-                    <p>{ name } <span>{number}</span></p>
-                </li>
-       })}
-      </ul>
-    
+      <Container>
+      <MainTitle>PHONEBOOK</MainTitle>
+      <ContactForm onSubmit={this.addContactOnSubmitForm} />      
+      <ContactTitle>CONTACTS</ContactTitle>
+      <Filter filter={filter} onChange={this.handleChange } />
+      <ContactList contacts={filteredContacts} onDeleted={ this.deletedContact } />
+      </Container>
     </>
     
   }
