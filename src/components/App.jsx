@@ -18,10 +18,9 @@ class App extends Component {
 
   
 
-  addContactOnSubmitForm = (name, number) => {
-    const { contacts } = this.state
+  addContactOnSubmitForm = (name, number) => {  
     
-    if (contacts.find(contact =>
+    if (this.state.contacts.find(contact =>
       contact.name.toLowerCase() === name.toLowerCase())) {
      return alert(`${name} is already in contact list`)
     }
@@ -44,16 +43,15 @@ class App extends Component {
   }
 
   filterContact = () => {
-    const { contacts, filter } = this.state
     
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
+    return this.state.contacts.filter(contact =>
+      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
     )
   }
 
   deletedContact = (id) => {
     this.setState(prevState => {
-      return {contacts: prevState.contacts.filter(contact => !(contact.id === id))}      
+      return {contacts: prevState.contacts.filter(contact => contact.id !== id)}      
     })
   }
 
