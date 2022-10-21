@@ -27,10 +27,6 @@ export default function App() {
     setContacts(prevState => [newContact, ...prevState]);
   }
 
-  function handleChange(e) {
-    setFilter(e.target.value);
-  }
-
   function filterContacts() {
     return contacts.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase())
@@ -49,10 +45,9 @@ export default function App() {
     }
   }, []);
 
-  useEffect(
-    () => localStorage.setItem('contacts', JSON.stringify(contacts)),
-    [contacts]
-  );
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   return (
     <>
@@ -60,7 +55,7 @@ export default function App() {
         <MainTitle>PHONEBOOK</MainTitle>
         <ContactForm onSubmit={addContactOnSubmitForm} />
         <ContactTitle>CONTACTS</ContactTitle>
-        <Filter filter={filter} onChange={handleChange} />
+        <Filter filter={filter} onChange={e => setFilter(e.target.value)} />
         <ContactList contacts={filterContacts()} onDeleted={deletedContact} />
       </Container>
     </>
