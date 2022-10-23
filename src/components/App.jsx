@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList';
@@ -6,10 +6,10 @@ import Filter from './Filter';
 import { ContactTitle, Container, MainTitle } from './App.styled';
 
 export default function App() {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(
+    JSON.parse(localStorage.getItem('contacts')) || []
+  );
   const [filter, setFilter] = useState('');
-  const isFirstRender = useRef(true);
-  // console.log(isFirstRender);
 
   function addContactOnSubmitForm(name, number) {
     if (
@@ -40,21 +40,6 @@ export default function App() {
   }
 
   useEffect(() => {
-    const parsedContacts = JSON.parse(localStorage.getItem('contacts'));
-
-    console.log(parsedContacts);
-
-    if (parsedContacts) {
-      return setContacts(parsedContacts);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
     localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
