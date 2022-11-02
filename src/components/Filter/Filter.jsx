@@ -1,8 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { SearchContainer, SearchInput, TextTitle } from './Filter.styled';
+import { getFilterContacts } from 'redux/contactsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFilter } from 'redux/selectors';
 
-const Filter = ({ filter, onChange }) => {
+const Filter = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(getFilter);
+
+  const handleChange = e => {
+    dispatch(getFilterContacts(e.target.value));
+  };
+
   return (
     <SearchContainer>
       <label>
@@ -14,7 +23,7 @@ const Filter = ({ filter, onChange }) => {
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
           required
           value={filter}
-          onChange={onChange}
+          onChange={handleChange}
         />
       </label>
     </SearchContainer>
@@ -22,8 +31,3 @@ const Filter = ({ filter, onChange }) => {
 };
 
 export default Filter;
-
-Filter.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  filter: PropTypes.string.isRequired,
-};

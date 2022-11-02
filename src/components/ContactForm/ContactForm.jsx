@@ -1,22 +1,34 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { Formik, Form, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { FormContainer, Input, SubmitButton } from './ContactForm.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContacts } from 'redux/contactsSlice';
+import { getContacts } from 'redux/selectors';
 
 const schema = yup.object().shape({
   name: yup.string().required(),
   number: yup.string().required().min(7, 'минимум 7 символов').max(20),
 });
 
-const ContactForm = ({ onSubmit }) => {
+const ContactForm = () => {
   const InitialValues = {
     name: '',
     number: '',
   };
 
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+
   const onSubmitForm = ({ name, number }, { resetForm }) => {
-    onSubmit(name, number);
+    if (
+      contacts.find(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      return alert(`${name} is already in contact list`);
+    }
+
+    dispatch(addContacts(name, number));
     resetForm();
   };
 
@@ -38,10 +50,6 @@ const ContactForm = ({ onSubmit }) => {
       </Formik>
     </FormContainer>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default ContactForm;

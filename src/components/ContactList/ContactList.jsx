@@ -1,26 +1,45 @@
-import React from "react";
-import PropTypes from 'prop-types';
-import { ContactItem, ListContact, Contact, ContactNumber, DeleteBtn } from "./ContactList.styled";
+import {
+  ContactItem,
+  ListContact,
+  Contact,
+  ContactNumber,
+  DeleteBtn,
+} from './ContactList.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteContact } from 'redux/contactsSlice';
+import { getContacts, getFilter } from 'redux/selectors';
 
-const ContactList = ({contacts, onDeleted}) => {
+const filterContacts = (contacts, filter) => {
+  return contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+};
 
-    return <ListContact>
-        {contacts.map(({id, name, number}) => {
-          return <ContactItem key={id}>
-              <Contact>{name} <ContactNumber>{number}</ContactNumber></Contact>
-              <DeleteBtn type="button" onClick={()=> onDeleted(id)}>Deleted</DeleteBtn>
-                </ContactItem>
-       })}
-      </ListContact>
-}
+const ContactList = () => {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const filteredContacts = filterContacts(contacts, filter);
+  const dispatch = useDispatch();
 
-export default ContactList
+  return (
+    <ListContact>
+      {filteredContacts.map(({ id, name, number }) => {
+        return (
+          <ContactItem key={id}>
+            <Contact>
+              {name} <ContactNumber>{number}</ContactNumber>
+            </Contact>
+            <DeleteBtn
+              type="button"
+              onClick={() => dispatch(deleteContact(id))}
+            >
+              Deleted
+            </DeleteBtn>
+          </ContactItem>
+        );
+      })}
+    </ListContact>
+  );
+};
 
-ContactList.propTypes = {
-  onDeleted: PropTypes.func.isRequired,
-  contacts: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    number: PropTypes.string.isRequired,
-  })),
-}
+export default ContactList;
