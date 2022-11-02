@@ -10,7 +10,7 @@ export default function App() {
         <MainTitle>PHONEBOOK</MainTitle>
         <ContactForm />
         <ContactTitle>CONTACTS</ContactTitle>
-        <Filter />
+        <Filter /> */
         <ContactList />
       </Container>
     </>
