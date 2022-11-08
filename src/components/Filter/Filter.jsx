@@ -1,12 +1,12 @@
 import React from 'react';
 import { SearchContainer, SearchInput, TextTitle } from './Filter.styled';
-import { getFilterContacts } from 'redux/contactsSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { getFilter } from 'redux/selectors';
+import { getFilterContacts } from 'redux/contactsSlice';
+import { selectFilter } from 'redux/selectors';
 
 const Filter = () => {
   const dispatch = useDispatch();
-  const filter = useSelector(getFilter);
+  const filter = useSelector(selectFilter);
 
   const handleChange = e => {
     dispatch(getFilterContacts(e.target.value));

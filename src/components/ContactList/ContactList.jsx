@@ -6,20 +6,22 @@ import {
   DeleteBtn,
 } from './ContactList.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from 'redux/contactsSlice';
-import { getContacts, getFilter } from 'redux/selectors';
-
-const filterContacts = (contacts, filter) => {
-  return contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-};
+import { deleteContact } from 'redux/operations';
+import { selectFilterContacts } from 'redux/selectors';
+import { fetchContacts } from 'redux/operations';
+import { useEffect } from 'react';
 
 const ContactList = () => {
-  const contacts = useSelector(getContacts);
-  const filter = useSelector(getFilter);
-  const filteredContacts = filterContacts(contacts, filter);
   const dispatch = useDispatch();
+  const filteredContacts = useSelector(selectFilterContacts);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    dispatch(fetchContacts(controller));
+
+    return () => controller.abort();
+  }, [dispatch]);
 
   return (
     <ListContact>
