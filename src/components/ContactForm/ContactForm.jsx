@@ -15,7 +15,6 @@ const ContactForm = () => {
     name: '',
     number: '',
   };
-
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
 
